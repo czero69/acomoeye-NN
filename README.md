@@ -39,7 +39,7 @@ git clone https://github.com/czero69/acomoeye-NN.git
 
 Dataset for 8 subjects in 14 tests, 49 gaze points each test. Each gaze point has 1k photos of 'narrowing' pupil with gaze direction label: gazeX (yaw), gazeY (pitch). Rotations are applied in order yaw, pitch as extrinsic rotation. Note that it is different notation compared to NVGaze datasets. Dataset was gathered with a 300Hz IR camera mounted in Oculus DK2 on 40°x40° FOV. Dataset is ready to be trained, images are cropped and resized to 127x127.
 
-[Download](https://drive.google.com/file/d/1F2n6a8vaA0x0JilqDAC9d3dmC4Xgwc1R/view?usp=sharing "acomoeye-14 dataset") Acomo-14 dataset.
+:cd: [Download](https://drive.google.com/file/d/1F2n6a8vaA0x0JilqDAC9d3dmC4Xgwc1R/view?usp=sharing "acomoeye-14 dataset") Acomo-14 dataset.
 
 - :zap: for train use: Train6-merged-monocular-R-shuffled-train.csv	(80% gaze points from 7 subjects in 13 tests)
 - :zap: for valid use: Train6-merged-monocular-R-shuffled-test-SMALL.csv (100% gaze points from 1 unseen subject plus 20% gaze points from 7 subjects in 13 tests)
@@ -47,36 +47,36 @@ Dataset for 8 subjects in 14 tests, 49 gaze points each test. Each gaze point ha
 ![](images/acomo-14-samples/0016292.png) ![](images/acomo-14-samples/0025384.png) ![](images/acomo-14-samples/0029346.png) ![](images/acomo-14-samples/0043935.png) ![](images/acomo-14-samples/0056437.png) ![](images/acomo-14-samples/0104247.png)
 
 ## Run
-Edit paths for train and eval in .config.py:
+:one: Edit paths for train and eval in .config.py:
 ```
 cd tensorflow_toolkit/eyetracking/
 gedit acomo_basic/config.py
 ```
-Training & eval:
+:two: Training & eval:
 ```
 python tools/train.py acomo_basic/config.py
 python tools/eval.py acomo_basic/config.py
 ```
-You can run train and eval concurrently, so later you can plot per-subject accuracies in tensorboard.
+:hash: You can run train and eval concurrently, so later you can plot per-subject accuracies in tensorboard.
 
 ## Tips
 
-To run eval or training on tensorflow CPU and not GPU set in .config in eval/train class:
+:small_orange_diamond: To run eval or training on tensorflow CPU and not GPU set in .config in eval/train class:
 ```
 CUDA_VISIBLE_DEVICES = ""
 ```
 
-To export openvino model (you must install openvino environment, see below):
+:small_orange_diamond: To export openvino model (you must install openvino environment, see below):
 ```
 python tools/export.py --data_type FP32 acomo_basic/config.py
 ```
 
-To check out openvino inference engine, 79000 - exported iteration number:
+:small_orange_diamond: To check out openvino inference engine, 79000 - exported iteration number:
 ```
 python tools/infer_ie.py --model model_acomo_basic/export_79000/IR/FP32/eyenet.xml --config acomo_basic/config.py /path/to/img/0005353.png
 ```
 
-To plot loss, accuracies, per-subject accuracies etc. run tensorboard:
+:small_orange_diamond: To plot loss, accuracies, per-subject accuracies etc. run tensorboard:
 ```
 cd ./model_acomo_basic
 tensorboard --logdir ./ --port 5999
@@ -84,6 +84,7 @@ localhost:5999		# paste in web browser
 ```
 
 # Results
+:large_blue_diamond: Table 1. Inference time for 127x127 input and first layer L=16.
 
 | <sub>inference engine</sub> | <sub>baseline</sub> | <sub><b>c</b>oord-<br>Conv</sub> | <sub><b>g</b>lobal-<br>Context</sub> | <sub>coarse-<br><b>D</b>ropout</sub> | <sub><b>f</b>ireBlocks</sub> | <sub><b>a</b>ttention</sub> | <sub><b>cgDa</b></sub> | <sub><b>cgDaf</b></sub> |
 | ---------------- |:--------:|:---------:|:-------:|:-------:|:---------:|:---------:|:----:|:-----:|
@@ -93,7 +94,7 @@ localhost:5999		# paste in web browser
 | ---------------- | -------- | --------- | ------- | ------- | --------- | --------- | ---- | ----- |
 | <sub>parameters count</sub> | <sub>157755</sub>   | <sub>158043</sub>    | <sub>158459</sub>  | <sub>157755</sub>  | <sub>22424</sub>     | <sub>159853</sub>    |<sub>160845</sub>|<sub>25514</sub>  |
 
-Table 1. Inference time for 127x127 input and first layer L=16.
+:large_blue_diamond: Table 2. Generalization for unseen subjects, angular error in degrees, trained for 1M iterations. Error with affine calibration (calibrated, bottom) and without affine calibration (raw, upper) is reported. (N/T), N - number of the subject when test, T - number of the subject when train. NVGaze Datasets were used 'as is' forex. NVGaze-AR was not cropped to pupil location. Input res: 127x127, first layer L=16.
 
 
 | <sub>Dataset raw/calibrated</sub>| <sub>baseline</sub> | <sub><b>c</b>oord-<br>conv</sub> | <sub><b>g</b>lobal-<br>context</sub> | <sub>coarse-<br><b>d</b>ropout</sub> | <sub><b>f</b>ireBlock</sub> | <sub><b>a</b>ttention</sub> | <sub><b>cgda</b></sub> | <sub><b>cgdaf</b></sub> |
@@ -102,7 +103,7 @@ Table 1. Inference time for 127x127 input and first layer L=16.
 | <sub>NVGaze-VR (4/9)</sub>          |<sub>3.49°<br>2.33°</sub>|<sub>3.00°<br>2.51°</sub>|<sub>3.30°<br>2.57°</sub>|<sub>3.58°<br>2.63°</sub>|<sub>3.27°<br>2.67°</sub>|<sub>3.04°<br><b>2.29°</b></sub>|<sub><b>2.79°</b><br>2.47°</sub>|<sub>3.21°<br>2.69°</sub>|
 | <sub>Acomo (1/8)</sub>              |<sub>5.24°<br>3.44°</sub>|<sub>4.93°<br>3.48°</sub>|<sub>5.11°<br>2.68°</sub>|<sub>6.17°<br>3.66°</sub>|<sub>4.23°<br>3.28°</sub>|<sub>4.86°<br>3.22°</sub>|<sub>7.51°<br>3.86°</sub>|<sub><b>3.99°</b><br><b>2.57°</b></sub>|
 
-Table 2. Generalization for unseen subjects, angular error in degrees, trained for 1M iterations. Error with affine calibration (calibrated, bottom) and without affine calibration (raw, upper) is reported. (N/T), N - number of the subject when test, T - number of the subject when train. NVGaze Datasets were used 'as is' forex. NVGaze-AR was not cropped to pupil location. Input res: 127x127, first layer L=16.
+:large_blue_diamond: Table 3. Generalization for new gaze vectors (amongst known subjects), angular error in degrees, trained for 1M iterations. Error with affine calibration (calibrated, bottom) and without affine calibration (raw, upper) is reported. (N), N - number of the subject when test. NVGaze Datasets were used 'as is' forex. NVGaze-AR was not cropped to pupil location. Input res: 127x127, first layer L=16.
 
 | <sub>Dataset raw/calibrated</sub>| <sub>baseline</sub> | <sub><b>c</b>oord-<br>conv</sub> | <sub><b>g</b>lobal-<br>context</sub> | <sub>coarse-<br><b>d</b>ropout</sub> | <sub><b>f</b>ireBlock</sub> | <sub><b>a</b>ttention</sub> | <sub><b>cgda</b></sub> | <sub><b>cgdaf</b></sub> |
 | ------------------------ |:--------:|:---------:|:-------:|:-------:|:---------:|:---------:|:----:|:-----:|
@@ -111,7 +112,6 @@ Table 2. Generalization for unseen subjects, angular error in degrees, trained f
 | <sub>NVGaze-VR (9)</sub> | <sub>2.89°<br>2.48°</sub> | <sub>2.52°<br><b>2.09°</b></sub> | <sub>2.62°<br>2.16°</sub> | <sub>2.73°<br>2.28°</sub> | <sub>2.86°<br>2.55°</sub> | <sub>2.63°<br>2.34°</sub> | <sub><b>2.42°</b><br>2.26°</sub> | <sub>2.45°<br>2.24°</sub> |
 | <sub>Acomo (8)</sub>  | <sub>4.05°<br>3.01°</sub> | <sub>3.84°<br>2.97°</sub> | <sub>3.72°<br><b>2.66°</b></sub> | <sub>4.39°<br>3.24°</sub> | <sub>3.51°<br>2.97°</sub> | <sub>3.84°<br>2.98°</sub> | <sub>4.50°<br>3.21°</sub> | <sub><b>3.41°</b><br>2.67°</sub> |
 
-Table 3. Generalization for new gaze vectors (amongst known subjects), angular error in degrees, trained for 1M iterations. Error with affine calibration (calibrated, bottom) and without affine calibration (raw, upper) is reported. (N), N - number of the subject when test. NVGaze Datasets were used 'as is' forex. NVGaze-AR was not cropped to pupil location. Input res: 127x127, first layer L=16.
 
 Choosing the best upgrade technique for each dataset, proposed upgrades gives better avaraged accuracy, as follows:
 - -0.82° generalization new subject raw error
