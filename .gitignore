@@ -1,0 +1,6 @@
+# ignore training artifacts & models:
+tensorflow_toolkit/eyetracking/model_gazeVec*
+tensorflow_toolkit/eyetracking/model_acomo*
+tensorflow_toolkit/eyetracking/logfile_py.log
+*__pycache__
+*tensorflow_toolkit/eyetracking/nvGaze_*
